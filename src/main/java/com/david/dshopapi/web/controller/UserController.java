@@ -1,16 +1,16 @@
 package com.david.dshopapi.web.controller;
 
 
+import com.david.dshopapi.constants.MessageConstant;
 import com.david.dshopapi.core.Result;
 import com.david.dshopapi.core.ResultGenerator;
 import com.david.dshopapi.model.User;
 import com.david.dshopapi.service.UserService;
+import com.david.dshopapi.utils.LogUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -26,19 +26,35 @@ public class UserController {
     @Resource
     private UserService userService;
 
+
     /**
-     *
-     {
-     "code": 500,
-     "message": "接口 [/user/add] 内部错误，请联系管理员"
-     }
+     * 登录。。
+     */
+    @PostMapping("/login/{username}/{password}")
+    public Result login(@PathVariable("username") String username, @PathVariable("password") String password) {
 
-     {
-     "code": 200,
-     "data": null,
-     "message": "SUCCESS"
-     }
+        User user = userService.findUserByUsernamePassword(username, password);
+        if (user == null) {
+            // 如果user为空，则说明用户名或者密码不正确
+            return ResultGenerator.genFailResult(MessageConstant.LOGIN_MESSAGE);
+        } else {
+            // 登录成功。
+            return ResultGenerator.genSuccessResult(user);
+        }
 
+    }
+
+    /**
+     * {
+     * "code": 500,
+     * "message": "接口 [/user/add] 内部错误，请联系管理员"
+     * }
+     * <p>
+     * {
+     * "code": 200,
+     * "data": null,
+     * "message": "SUCCESS"
+     * }
      */
     @PostMapping("/add")
     public Result add(User user) {
@@ -57,22 +73,22 @@ public class UserController {
         userService.update(user);
         return ResultGenerator.genSuccessResult();
     }
-    /**
-     *
-     {
-     "code": 200,
-     "data": {
-     "age": 30,
-     "uid": 1,
-     "username": "david"
-     },
-     "message": "SUCCESS"
-     }
 
-     {
-     "code": 500,
-     "message": "接口 [/user/detail] 内部错误，请联系管理员"
-     }
+    /**
+     * {
+     * "code": 200,
+     * "data": {
+     * "age": 30,
+     * "uid": 1,
+     * "username": "david"
+     * },
+     * "message": "SUCCESS"
+     * }
+     * <p>
+     * {
+     * "code": 500,
+     * "message": "接口 [/user/detail] 内部错误，请联系管理员"
+     * }
      */
     @PostMapping("/detail")
     public Result detail(@RequestParam Integer id) {
@@ -84,48 +100,47 @@ public class UserController {
 
     /**
      * http://localhost:8080/user/list?page=1&size=1
+     *
      * @param page 当前页 从第1页开始
      * @param size 每页显示数量 默认 查所有
-    {
-    "code": 200,
-    "data": {
-    "endRow": 12,
-    "firstPage": 0,
-    "hasNextPage": false,
-    "hasPreviousPage": false,
-    "isFirstPage": false,
-    "isLastPage": true,
-    "lastPage": 0,
-    "list": [
-    {
-    "age": 30,
-    "uid": 1,
-    "username": "david"
-    },
-    {
-    "age": 22,
-    "uid": 67,
-    "username": "xiaobing"
-    }
-    ],
-    "navigateFirstPage": 0,
-    "navigateLastPage": 0,
-    "navigatePages": 8,
-    "navigatepageNums": [],
-    "nextPage": 0,
-    "orderBy": "",
-    "pageNum": 0,
-    "pageSize": 0,
-    "pages": 0,
-    "prePage": 0,
-    "size": 12,
-    "startRow": 1,
-    "total": 12
-    },
-    "message": "SUCCESS"
-    }
-     *
-     *
+     *             {
+     *             "code": 200,
+     *             "data": {
+     *             "endRow": 12,
+     *             "firstPage": 0,
+     *             "hasNextPage": false,
+     *             "hasPreviousPage": false,
+     *             "isFirstPage": false,
+     *             "isLastPage": true,
+     *             "lastPage": 0,
+     *             "list": [
+     *             {
+     *             "age": 30,
+     *             "uid": 1,
+     *             "username": "david"
+     *             },
+     *             {
+     *             "age": 22,
+     *             "uid": 67,
+     *             "username": "xiaobing"
+     *             }
+     *             ],
+     *             "navigateFirstPage": 0,
+     *             "navigateLastPage": 0,
+     *             "navigatePages": 8,
+     *             "navigatepageNums": [],
+     *             "nextPage": 0,
+     *             "orderBy": "",
+     *             "pageNum": 0,
+     *             "pageSize": 0,
+     *             "pages": 0,
+     *             "prePage": 0,
+     *             "size": 12,
+     *             "startRow": 1,
+     *             "total": 12
+     *             },
+     *             "message": "SUCCESS"
+     *             }
      */
     @PostMapping("/list")
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {

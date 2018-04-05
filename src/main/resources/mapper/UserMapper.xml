@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.david.edspringbootapibuildproject.dao.UserMapper">
+<mapper namespace="com.david.dshopapi.dao.UserMapper">
   <resultMap id="BaseResultMap" type="com.david.dshopapi.model.User">
     <!--
       WARNING - @mbg.generated
@@ -8,5 +8,10 @@
     <id column="uid" jdbcType="INTEGER" property="uid" />
     <result column="age" jdbcType="INTEGER" property="age" />
     <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password"/>
   </resultMap>
+
+  <select id="findUserByUsernamePassword" resultType="com.david.dshopapi.model.User" parameterType="com.david.dshopapi.model.User">
+      SELECT * FROM USER WHERE username = #{username} and password = #{password}
+  </select>
 </mapper>
