@@ -12,6 +12,9 @@
   </resultMap>
 
   <select id="findUserByUsernamePassword" resultType="com.david.dshopapi.model.User" parameterType="com.david.dshopapi.model.User">
-      SELECT * FROM USER WHERE username = #{username} and password = #{password}
+      SELECT * FROM user WHERE username = #{username} and password = #{password}
+  </select>
+  <select id="findUserByUsername" resultMap="BaseResultMap" parameterType="String">
+      SELECT * FROM user WHERE username = #{username}
   </select>
 </mapper>

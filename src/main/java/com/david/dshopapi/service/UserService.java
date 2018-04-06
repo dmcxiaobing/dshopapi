@@ -12,4 +12,6 @@ public interface UserService extends Service<User> {
      * 根据用户名和密码查找用户
      */
     User findUserByUsernamePassword(String username,String password);
+
+    User findUserByUsername(String username);
 }

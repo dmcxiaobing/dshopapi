@@ -24,4 +24,11 @@ public class ProjectConstant {
 	public static final String JDBC_PASSWORD = "1234";
 	public static final String JDBC_DIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
 
+	/*密码加密的盐*/
+	public static final String MD5_SALT = "DAVID";
+	//以这个字符串，随机取出四个做验证码，相似的去掉了
+	public static final  String RANDOM_CODE = "3456789abcdefghjkmnopqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ";
+	// 注册时候的验证码 code。session的key
+	public static final  String USER_SESSION_CHECK_CODE = "USER_SESSION_CHECK_CODE";
+
 }

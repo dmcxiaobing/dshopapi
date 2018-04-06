@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Select;
  * mapper查询接口
  */
 public interface UserMapper extends Mapper<User> {
-    //@Select(" SELECT * FROM USER WHERE username = #{username} and password = #{password}")
+    //@Select(" SELECT * FROM tb_user WHERE username = #{username} and password = #{password}")
     User findUserByUsernamePassword(User user);
+
+    User findUserByUsername(String username);
 }

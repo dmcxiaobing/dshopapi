@@ -2,23 +2,30 @@ package com.david.dshopapi.web.controller;
 
 
 import com.david.dshopapi.constants.MessageConstant;
+import com.david.dshopapi.constants.ProjectConstant;
 import com.david.dshopapi.core.Result;
 import com.david.dshopapi.core.ResultGenerator;
 import com.david.dshopapi.model.User;
 import com.david.dshopapi.service.UserService;
-import com.david.dshopapi.utils.LogUtils;
+import com.david.dshopapi.utils.CodeUtil;
+import com.david.dshopapi.utils.LogUtil;
+import com.david.dshopapi.utils.MD5Util;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import tk.mybatis.mapper.entity.Condition;
+import sun.plugin2.message.Message;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
  * @author ：David
  * @weibo ：http://weibo.com/mcxiaobing
  * @github: https://github.com/QQ986945193
+ *
+ * 用户
  */
 @RestController
 @RequestMapping("/user")
@@ -41,6 +48,63 @@ public class UserController {
             // 登录成功。
             return ResultGenerator.genSuccessResult(user);
         }
+
+    }
+
+    /**
+     * 注册，发送验证码，防止一直调用注册接口。。
+     */
+    @PostMapping("/regist/sendCode")
+    public Result sendCode(HttpSession session) {
+
+        String code = CodeUtil.getFourCode();
+        // 然后将code存入到session中，并且发送到前段。
+        if (StringUtils.isNotBlank(code)) {
+            session.setAttribute(ProjectConstant.USER_SESSION_CHECK_CODE,code);
+            return ResultGenerator.genSuccessResult(code);
+        }
+        return  ResultGenerator.genFailResult(MessageConstant.CHECK_CODE_MESSAGE);
+
+    }
+
+
+    /**
+     * 注册,将用户名和密码保存到数据库。
+     */
+    @PostMapping("/regist/registSave")
+    public Result registSave(HttpSession session,@RequestParam(value = "code",required = false) String code,@RequestParam(value = "username",required = false) String username,@RequestParam(value = "password",required = false) String password) {
+
+        if (StringUtils.isEmpty(code)){
+            // 则验证码填入为空
+            return ResultGenerator.genFailResult(MessageConstant.CHECK_CODE_ERROR_MESSAGE);
+        }
+
+        // 首先查看 session的验证码和传来的是否一致。
+        String sessionCode = (String) session.getAttribute(ProjectConstant.USER_SESSION_CHECK_CODE);
+        LogUtil.E(sessionCode);
+        if (!code.equalsIgnoreCase(sessionCode)){
+            // 则验证码填入的不正确
+            return ResultGenerator.genFailResult(MessageConstant.CHECK_CODE_ERROR_MESSAGE);
+        }
+        // 如果正确，查看用户名和密码不能为空，然后查看数据库中是否存在一样的用户名，
+        if (StringUtils.isEmpty(username)||StringUtils.isEmpty(password)){
+            return ResultGenerator.genFailResult(MessageConstant.NO_USERNAME_PASSWORD);
+        }
+        // 根据用户名查找用户。
+        User dbUser = userService.findUserByUsername(username);
+        if (dbUser!=null){
+            // 如果查询到了，则说明用户已经存在了。
+            return ResultGenerator.genFailResult(MessageConstant.USERNAME_IS_USED);
+        }
+
+        // 将用户名和密码保存到数据库
+        User user = new User();
+        user.setUsername(username);
+        // 密码进行加密
+        user.setPassword(MD5Util.encryptPassword(username,password,ProjectConstant.MD5_SALT));
+        userService.save(user);
+        // 这里为了防止重复调用，也可以注册之后，将session中的code清楚，这样必须要先调用验证码。
+        return ResultGenerator.genSuccessResult();
 
     }
 

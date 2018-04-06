@@ -10,9 +10,9 @@ import org.apache.log4j.Logger;
 /**
  * 简单介绍使用log4j
  */
-public class LogUtils {
+public class LogUtil {
     //创建日志对象
-    private static Logger log = Logger.getLogger(LogUtils.class);
+    private static Logger log = Logger.getLogger(LogUtil.class);
 
 
 
