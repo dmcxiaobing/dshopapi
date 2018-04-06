@@ -3,6 +3,7 @@ package com.david.dshopapi.model;
 import java.io.Serializable;
 
 /**
+ * 统一返回的json数据封装
  * @author ：David
  * @weibo ：http://weibo.com/mcxiaobing
  * @github: https://github.com/QQ986945193

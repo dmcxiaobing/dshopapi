@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.david.dshopapi.dao.MainMapper">
+  <resultMap id="BaseResultMap" type="com.david.dshopapi.model.Main">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="banner_title" jdbcType="VARCHAR" property="bannerTitle" />
+    <result column="banner_image" jdbcType="VARCHAR" property="bannerImage" />
+    <result column="content_title" jdbcType="VARCHAR" property="contentTitle"/>
+    <result column="content_content" jdbcType="VARCHAR" property="contentContent"/>
+  </resultMap>
+
+
+</mapper>
