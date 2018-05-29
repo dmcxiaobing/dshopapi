@@ -23,7 +23,7 @@ import java.util.List;
  * @author ：David
  * @weibo ：http://weibo.com/mcxiaobing
  * @github: https://github.com/QQ986945193
- *
+ *SELECT * from `user` WHERE username = 'mazi' and password = 'mazi'
  * 用户
  */
 @RestController
